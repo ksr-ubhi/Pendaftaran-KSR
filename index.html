@@ -600,57 +600,68 @@
       });
 
       document
-        .getElementById("form-relawan")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
+  .getElementById("form-relawan")
+  .addEventListener("submit", function (e) {
+    e.preventDefault();
 
-          // Masukkan nomor WA Anda di sini. Format: 62... (tanpa 0, +, atau spasi)
-          const nomorAdmin = "628998381692";
+    const nomorAdmin = "628998381692";
 
-          // Link grup WA untuk user
-          const linkGrup = {
-            donor: "https://chat.whatsapp.com/HdExirHadgWFZ6PZaxxWQ9", // Ganti dengan link grup Donor
-            ksr: "https://chat.whatsapp.com/HV5wMCe9fkjB6BRToJcPcF", // Ganti dengan link grup KSR
-          };
+    // Link grup WA
+    const linkGrup = {
+      ksr: "https://chat.whatsapp.com/HV5wMCe9fkjB6BRToJcPcF?mode=ems_copy_c", // Grup KSR
+    };
 
-          // --- 2. Ambil semua data dari form ---
-          const nama = document.getElementById("nama").value;
-          const email = document.getElementById("email").value;
-          const telepon = document.getElementById("telepon").value;
-          const prodi = document.getElementById("prodi").value;
-          const kegiatanSelect = document.getElementById("kegiatan");
-          const kegiatanValue = kegiatanSelect.value;
+    // Ambil data form
+    const nama = document.getElementById("nama").value;
+    const email = document.getElementById("email").value;
+    const telepon = document.getElementById("telepon").value;
+    const prodi = document.getElementById("prodi").value;
+    const kegiatanSelect = document.getElementById("kegiatan");
+    const kegiatanValue = kegiatanSelect.value;
+    const kegiatanText = kegiatanSelect.options[kegiatanSelect.selectedIndex].text;
 
-          // Mengambil teks dari pilihan (contoh: "Donor Darah")
-          const kegiatanText =
-            kegiatanSelect.options[kegiatanSelect.selectedIndex].text;
+    if (!kegiatanValue) {
+      alert("Silakan pilih kegiatan terlebih dahulu.");
+      return;
+    }
 
-          // Cek apakah kegiatan sudah dipilih
-          if (!kegiatanValue) {
-            alert("Silakan pilih kegiatan terlebih dahulu.");
-            return; // Hentikan proses jika belum memilih
-          }
-
-          // --- 3. Buat pesan untuk dikirim ke WA Anda ---
-          const pesanUntukAdmin = `
-        *Pendaftaran Relawan Baru*%0A
-        ------------------------------------%0A
-        *Nama:* ${nama}%0A
-        *Email:* ${email}%0A
-        *No. Telp:* ${telepon}%0A
-        *Prodi:* ${prodi}%0A
-        *Pilihan Kegiatan:* ${kegiatanText}%0A
-        ------------------------------------
+    // --- Jika donor, langsung chat admin ---
+    if (kegiatanValue === "donor") {
+      const pesanDonor = `
+*Halo Kak, Aku ingin donor*%0A
+------------------------------------------------------------%0A
+Nama: ${nama}%0A
+Email: ${email}%0A
+No. Telp: ${telepon}%0A
+Prodi: ${prodi}%0A
+------------------------------------------------------------%0A
       `.trim();
 
-          const linkKirimKeAdmin = `https://wa.me/${nomorAdmin}?text=${pesanUntukAdmin}`;
+      const linkDonor = `https://wa.me/${nomorAdmin}?text=${pesanDonor}`;
+      window.open(linkDonor, "_blank");
+      return;
+    }
 
-          window.open(linkKirimKeAdmin, "_blank");
+    // --- Jika KSR, masuk grup dulu, lalu lanjut chat admin ---
+    const pesanKSR = `
+*Halo Kak, Aku Anggota Baru*%0A
+------------------------------------------------------------%0A
+Nama: ${nama}%0A
+Email: ${email}%0A
+No. Telp: ${telepon}%0A
+Prodi: ${prodi}%0A
+------------------------------------------------------------%0A
+   `.trim();
 
-          setTimeout(() => {
-            window.location.href = linkGrup[kegiatanValue];
-          }, 1000);
-        });
+    // Masuk grup dulu
+    window.open(linkGrup[kegiatanValue], "_blank");
+
+    // Setelah 1,5 detik otomatis buka chat admin
+    setTimeout(() => {
+      const linkKSR = `https://wa.me/${nomorAdmin}?text=${pesanKSR}`;
+      window.open(linkKSR, "_blank");
+    }, 1500);
+  });
     </script>
   </body>
-  </html>
+</html>
